@@ -65,7 +65,7 @@ export async function dbReset(container) {
      * @returns {string} The resolved path to the test data directory.
      */
     function getTestDataPath(root) {
-        const pathInNodeModules = join(root, 'node_modules', '@flancer64', 'teq-agave-plugin', 'test', 'data');
+        const pathInNodeModules = join(root, 'node_modules', '@flancer64', 'teq-agave-oauth2', 'test', 'data');
         const pathInRoot = join(root, 'test', 'data');
 
         return existsSync(pathInNodeModules) ? pathInNodeModules : pathInRoot;

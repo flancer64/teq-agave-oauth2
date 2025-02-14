@@ -1,11 +1,11 @@
 {
-  "name": "@flancer64/teq-agave-plugin",
+  "name": "@flancer64/teq-agave-oauth2",
   "version": "0.1.0",
   "type": "module",
-  "description": "...",
-  "homepage": "https://github.com/flancer64/teq-agave-plugin/",
+  "description": "TeqFW plugin for OAuth2 authentication, enabling teq-apps to act as identity providers for external apps.",
+  "homepage": "https://github.com/flancer64/teq-agave-oauth2/",
   "bugs": {
-    "url": "https://github.com/flancer64/teq-agave-plugin/issues",
+    "url": "https://github.com/flancer64/teq-agave-oauth2/issues",
     "email": "alex@flancer64.com"
   },
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
     "email": "alex@flancer64.com",
     "url": "https://github.com/flancer64"
   },
-  "repository": "github:flancer64/teq-agave-plugin",
+  "repository": "github:flancer64/teq-agave-oauth2",
   "scripts": {
     "test:accept": "mocha ./test/accept --recursive",
     "test:unit": "mocha ./test/unit --recursive"
@@ -22,8 +22,7 @@
   "dependencies": {
     "@teqfw/core": ">=0.33.0 <1.0.0",
     "@teqfw/db": ">=0.22.1 <1.0.0",
-    "@teqfw/web": ">=0.26.0 <1.0.0",
-    "pg": "^8.13.1"
+    "@teqfw/web": ">=0.26.0 <1.0.0"
   },
   "devDependencies": {
     "@teqfw/test": ">=0.20.1 <1.0.0",

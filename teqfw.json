@@ -1,7 +1,7 @@
 {
   "@teqfw/di": {
     "autoload": {
-      "ns": "Vendor_Plugin_",
+      "ns": "Fl64_OAuth2_",
       "path": "./src"
     }
   }
