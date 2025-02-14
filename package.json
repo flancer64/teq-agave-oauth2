@@ -1,0 +1,38 @@
+{
+  "name": "@flancer64/teq-agave-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "...",
+  "homepage": "https://github.com/flancer64/teq-agave-plugin/",
+  "bugs": {
+    "url": "https://github.com/flancer64/teq-agave-plugin/issues",
+    "email": "alex@flancer64.com"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Alex Gusev",
+    "email": "alex@flancer64.com",
+    "url": "https://github.com/flancer64"
+  },
+  "repository": "github:flancer64/teq-agave-plugin",
+  "scripts": {
+    "test:accept": "mocha ./test/accept --recursive",
+    "test:unit": "mocha ./test/unit --recursive"
+  },
+  "dependencies": {
+    "@teqfw/core": ">=0.33.0 <1.0.0",
+    "@teqfw/db": ">=0.22.1 <1.0.0",
+    "@teqfw/web": ">=0.26.0 <1.0.0",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@teqfw/test": ">=0.20.1 <1.0.0",
+    "@types/knex": "^0.15.2",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "mocha": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

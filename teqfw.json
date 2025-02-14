@@ -1,0 +1,8 @@
+{
+  "@teqfw/di": {
+    "autoload": {
+      "ns": "Vendor_Plugin_",
+      "path": "./src"
+    }
+  }
+}

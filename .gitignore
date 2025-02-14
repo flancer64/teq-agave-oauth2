@@ -1,0 +1,16 @@
+/**/*.sqlite3*
+/**/local.json
+/**/node_modules/
+/**/own_modules/
+/**/package-lock.json
+/**/tmp/
+/.env
+/.idea/
+/.nyc_output/
+/.vscode/
+/cfg/local.*
+/coverage/
+/http-client.env.json
+/instrumented/
+/package-lock.json
+/var/*

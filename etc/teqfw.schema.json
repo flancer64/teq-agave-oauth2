@@ -1,0 +1,46 @@
+{
+  "package": {
+    "vendor": {
+      "package": {
+        "plugin": {
+          "entity": {
+            "name": {
+              "comment": "Some entity",
+              "attr": {
+                "id": {"type": "id"},
+                "user_ref": {
+                  "type": "ref",
+                  "comment": "Reference to the user."
+                },
+                "code": {
+                  "type": "string",
+                  "comment": "Some code."
+                },
+                "date_created": {
+                  "type": "datetime",
+                  "comment": "Date and time when the record was generated.",
+                  "default": "current"
+                }
+              },
+              "index": {
+                "code": {
+                  "type": "unique", "attrs": ["code"]
+                }
+              },
+              "relation": {
+                "user": {
+                  "attrs": ["user_ref"],
+                  "ref": {"path": "/user", "attrs": ["id"]},
+                  "action": {"delete": "cascade", "update": "cascade"}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "refs": {
+    "/user": ["id"]
+  }
+}
