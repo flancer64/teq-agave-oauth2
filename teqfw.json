@@ -4,5 +4,16 @@
       "ns": "Fl64_OAuth2_",
       "path": "./src"
     }
+  },
+  "@teqfw/core": {
+    "commands": ["Fl64_OAuth2_Back_Cli_Client_Create"]
+  },
+  "@teqfw/web": {
+    "handlers": {
+      "Fl64_OAuth2_Back_Web_Handler": {
+        "before": ["TeqFw_Web_Api_Back_Web_Handler_Service"],
+        "spaces": ["fl64-oauth2"]
+      }
+    }
   }
 }

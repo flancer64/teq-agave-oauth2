@@ -1,38 +1,45 @@
 {
   "package": {
-    "vendor": {
+    "fl64": {
       "package": {
-        "plugin": {
+        "oauth2": {
           "entity": {
-            "name": {
-              "comment": "Some entity",
+            "client": {
+              "comment": "Registry of OAuth2 clients authorized to interact with the application.",
               "attr": {
                 "id": {"type": "id"},
-                "user_ref": {
-                  "type": "ref",
-                  "comment": "Reference to the user."
-                },
-                "code": {
+                "client_id": {
                   "type": "string",
-                  "comment": "Some code."
+                  "comment": "Unique identifier for the client, used during authorization."
+                },
+                "client_secret": {
+                  "type": "string",
+                  "comment": "Secret key assigned to the client for secure communication."
+                },
+                "redirect_uri": {
+                  "type": "string",
+                  "comment": "Authorized redirect URI for the client."
+                },
+                "name": {
+                  "type": "string",
+                  "comment": "Human-readable name of the client (e.g., 'My App')."
+                },
+                "status": {
+                  "type": "enum",
+                  "comment": "Status of the client registration.",
+                  "options": {
+                    "values": ["ACTIVE", "INACTIVE"]
+                  },
+                  "default": "ACTIVE"
                 },
                 "date_created": {
                   "type": "datetime",
-                  "comment": "Date and time when the record was generated.",
+                  "comment": "Date and time when the client was registered.",
                   "default": "current"
                 }
               },
               "index": {
-                "code": {
-                  "type": "unique", "attrs": ["code"]
-                }
-              },
-              "relation": {
-                "user": {
-                  "attrs": ["user_ref"],
-                  "ref": {"path": "/user", "attrs": ["id"]},
-                  "action": {"delete": "cascade", "update": "cascade"}
-                }
+                "client_id": {"type": "unique", "attrs": ["client_id"]}
               }
             }
           }
