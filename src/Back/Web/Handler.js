@@ -19,6 +19,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Web_Back_App_Server_Respond} respond
      * @param {Fl64_OAuth2_Back_Helper_Web} helpWeb
+     * @param {Fl64_OAuth2_Back_Web_Handler_A_Authorize} aAuthorize
      */
     constructor(
         {
@@ -26,6 +27,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Back_App_Server_Respond$: respond,
             Fl64_OAuth2_Back_Helper_Web$: helpWeb,
+            Fl64_OAuth2_Back_Web_Handler_A_Authorize$: aAuthorize,
         }
     ) {
         /**
@@ -40,13 +42,12 @@ export default class Fl64_OAuth2_Back_Web_Handler {
                 const endpoint = parts[0];
                 switch (endpoint) {
                     case DEF.SHARED.ROUTE_AUTHORIZE:
-                        // await aAuthenticate.run(req, res);
+                        await aAuthorize.run(req, res);
                         break;
                     default:
                         // If the endpoint is not recognized, do nothing and let other handlers process it
                         break;
                 }
-                debugger
             } catch (error) {
                 logger.exception(error);
                 respond.status500(res, error);

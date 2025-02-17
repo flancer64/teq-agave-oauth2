@@ -4,9 +4,10 @@
 export default class Fl64_OAuth2_Back_Defaults {
     CLI_PREFIX = 'fl64-oauth2'; // prefix for CLI actions
 
+    LOCALE = 'en';
+
     /** @type {TeqFw_Web_Back_Defaults} */
     MOD_WEB;
-
     /** @type {string} */
     NAME;
 

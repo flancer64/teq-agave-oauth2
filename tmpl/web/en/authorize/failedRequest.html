@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Request</title>
+    <style>
+        :root {
+            --primary-color: #7f0000;
+            --background-color: #f4e1c1;
+            --text-color: #333;
+            --container-bg: white;
+            --button-radius: 4px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #222;
+                --text-color: #ddd;
+                --container-bg: #333;
+            }
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--background-color);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 360px;
+            margin: auto;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: var(--button-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .button {
+            display: inline-block;
+            background: #7f0000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--button-radius);
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            background: #a00000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Invalid Request</h2>
+
+    {{#isMissingParams}}
+    <p class="message error">The request is missing required parameters.</p>
+    {{/isMissingParams}}
+
+    {{#isInvalidResponseType}}
+    <p class="message error">The response type is invalid. Expected "code".</p>
+    {{/isInvalidResponseType}}
+
+    {{#isUnknownError}}
+    <p class="message error">An unexpected error occurred. Please check your request and try again.</p>
+    {{/isUnknownError}}
+
+    <p><a href="/" class="button">Go to Homepage</a></p>
+</div>
+</body>
+</html>

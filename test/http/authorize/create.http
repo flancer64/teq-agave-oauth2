@@ -1,0 +1,4 @@
+### authorization request
+GET https://{{host}}/fl64-oauth2/authorize?response_type=code&client_id=e0dd5d3b-db4d-4c66-86d0-fb00d0cd5ef5&
+    redirect_uri=https%3A%2F%2Fchat.openai.com%2Faip%2Fg-45e9ae2cba713caecc466b30547284b0b6aabf9f%2Foauth%2Fcallback&
+    state=8872e936-c105-4311-94b8-d92695004161&scope=actions

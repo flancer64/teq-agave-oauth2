@@ -1,0 +1,3 @@
+{
+  "vars": ["clientName", "clientId", "state", "redirectUri", "responseType", "scopes"]
+}
