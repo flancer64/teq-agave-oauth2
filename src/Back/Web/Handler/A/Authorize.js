@@ -1,11 +1,8 @@
-/**
- * Handles requests
- */
 import {constants as H2} from 'node:http2';
-import TeqFw_Web_Back_Help_Respond from '@teqfw/web/src/Back/Help/Respond.mjs';
 
 const {
     HTTP2_HEADER_CONTENT_RESULT,
+    HTTP2_HEADER_LOCATION,
     HTTP2_METHOD_GET,
     HTTP2_METHOD_POST,
 } = H2;
@@ -184,8 +181,8 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                     if (isAuthenticated) {
                         await respondAuthorizationPage(req, res, params);
                     } else {
-
-                        await respondFailure(req, res, params);
+                        // application must return the user to the same URL after authentication
+                        adapter.forwardToAuthentication({req, res});
                     }
                 }
             }
