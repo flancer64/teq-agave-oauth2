@@ -1,5 +1,5 @@
 /**
- * Handles requests
+ * Handles all requests in the plugin space.
  */
 import {constants as H2} from 'node:http2';
 
@@ -20,6 +20,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
      * @param {TeqFw_Web_Back_App_Server_Respond} respond
      * @param {Fl64_OAuth2_Back_Helper_Web} helpWeb
      * @param {Fl64_OAuth2_Back_Web_Handler_A_Authorize} aAuthorize
+     * @param {Fl64_OAuth2_Back_Web_Handler_A_Token} aToken
      */
     constructor(
         {
@@ -28,6 +29,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
             TeqFw_Web_Back_App_Server_Respond$: respond,
             Fl64_OAuth2_Back_Helper_Web$: helpWeb,
             Fl64_OAuth2_Back_Web_Handler_A_Authorize$: aAuthorize,
+            Fl64_OAuth2_Back_Web_Handler_A_Token$: aToken,
         }
     ) {
         /**
@@ -43,6 +45,9 @@ export default class Fl64_OAuth2_Back_Web_Handler {
                 switch (endpoint) {
                     case DEF.SHARED.ROUTE_AUTHORIZE:
                         await aAuthorize.run(req, res);
+                        break;
+                    case DEF.SHARED.ROUTE_TOKEN:
+                        await aToken.run(req, res);
                         break;
                     default:
                         // If the endpoint is not recognized, do nothing and let other handlers process it

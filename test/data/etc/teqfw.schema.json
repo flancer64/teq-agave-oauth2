@@ -1,0 +1,15 @@
+{
+  "package": {
+    "test": {
+      "entity": {
+        "token": {
+          "comment": "Test registry for tokens.",
+          "attr": {
+            "id": {"type": "id"},
+            "name": {"type": "string", "comment": "Token name."}
+          }
+        }
+      }
+    }
+  }
+}

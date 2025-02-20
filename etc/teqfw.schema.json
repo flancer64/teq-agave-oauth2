@@ -42,12 +42,41 @@
                 "client_id": {"type": "unique", "attrs": ["client_id"]}
               }
             }
+          },
+          "package": {
+            "client": {
+              "entity": {
+                "token": {
+                  "comment": "References to related tokens.",
+                  "attr": {
+                    "token_ref": {"type": "ref"},
+                    "client_ref": {"type": "ref"}
+                  },
+                  "index": {
+                    "pk": {"type": "primary", "attrs": ["token_ref"]}
+                  },
+                  "relation": {
+                    "client": {
+                      "attrs": ["client_ref"],
+                      "ref": {"path": "/fl64/oauth2/client", "attrs": ["id"]},
+                      "action": {"delete": "cascade", "update": "cascade"}
+                    },
+                    "token": {
+                      "attrs": ["token_ref"],
+                      "ref": {"path": "/token", "attrs": ["id"]},
+                      "action": {"delete": "cascade", "update": "cascade"}
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "refs": {
+    "/token": ["id"],
     "/user": ["id"]
   }
 }

@@ -43,9 +43,11 @@ export default class Fl64_OAuth2_Back_Api_Adapter {
     /**
      * Checks the authentication status of the current request.
      *
+     * TODO: should we use sessionManager here? This plug depends on the session plugin.
+     *
      * @param {Object} params
      * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} params.req - The HTTP request object.
-     * @returns {Promise<{isAuthenticated:boolean}>} - The authentication status.
+     * @returns {Promise<{isAuthenticated:boolean, userId:number}>} - The authentication status.
      */
     async getAuthStatus({req}) {
         throw new Error('Cannot instantiate an interface');

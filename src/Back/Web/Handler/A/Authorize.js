@@ -2,14 +2,12 @@ import {constants as H2} from 'node:http2';
 
 const {
     HTTP2_HEADER_CONTENT_RESULT,
-    HTTP2_HEADER_LOCATION,
     HTTP2_METHOD_GET,
-    HTTP2_METHOD_POST,
 } = H2;
 
 
 /**
- * @typedef {Object} OAuthRequestParams
+ * @typedef {Object} AuthorizeRequestParams
  * @property {string} clientId - The unique identifier of the OAuth client.
  * @property {string} redirectUri - The URI where the user should be redirected after authorization.
  * @property {string} responseType - The type of response expected by the client (e.g., "code").
@@ -29,10 +27,12 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
      * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
      * @param {TeqFw_Web_Back_Help_Respond} respond
      * @param {Fl64_Tmpl_Back_Service_Render} tmplRender
-     * @param {Fl64_OAuth2_Back_Helper_Web} helpWeb
+     * @param {Fl64_Otp_Back_Mod_Token} modToken - OTP token model to manage OTP tokens
      * @param {Fl64_OAuth2_Back_Api_Adapter} adapter
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client} repoClient
+     * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token} repoClientToken
      * @param {typeof Fl64_Tmpl_Back_Enum_Type} TMPL
+     * @param {typeof Fl64_OAuth2_Back_Enum_Token_Type} TOKEN
      */
     constructor(
         {
@@ -41,14 +41,17 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             TeqFw_Web_Back_Help_Respond$: respond,
             Fl64_Tmpl_Back_Service_Render$: tmplRender,
-            Fl64_OAuth2_Back_Helper_Web$: helpWeb,
+            Fl64_Otp_Back_Mod_Token$: modToken,
             Fl64_OAuth2_Back_Api_Adapter$: adapter,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client$: repoClient,
+            Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
             'Fl64_Tmpl_Back_Enum_Type.default': TMPL,
+            'Fl64_OAuth2_Back_Enum_Token_Type.default': TOKEN,
         }
     ) {
         // VARS
         const A_CLIENT = repoClient.getSchema().getAttributes();
+        const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
 
         // MAIN
         /**
@@ -65,27 +68,31 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             /**
              * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
              * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
-             * @param {OAuthRequestParams} params - Extracted OAuth 2.0 parameters.
+             * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
+             * @param {number} userId
              * @returns {Promise<void>}
              */
-            async function respondAuthorizationPage(req, res, params) {
+            async function respondAuthorizationPage(req, res, params, userId) {
                 await trxWrapper.execute(null, async (trx) => {
                     // Get client information from DB
                     const key = {[A_CLIENT.CLIENT_ID]: params.clientId};
                     const {record} = await repoClient.readOne({trx, key});
-                    if (!record) {
-                        return respondFailure(req, res, params);
-                    }
-
+                    if (!record) return respondFailure(req, res, params);
+                    // generate a code for authorization
+                    const {token, tokenId} = await modToken.create({trx, userId, type: TOKEN.AUTHORIZATION});
+                    // save reference between client & token
+                    const dto = repoClientToken.createDto();
+                    dto.client_ref = record.id;
+                    dto.token_ref = tokenId;
+                    await repoClientToken.createOne({trx, dto});
                     // Prepare the view for mustache template
                     const {localeApp, localeUser} = await adapter.getLocales({req});
                     const view = {
                         clientName: record.name,
-                        clientId: params.clientId,
+                        code: token,
                         redirectUri: params.redirectUri,
-                        responseType: params.responseType,
+                        scopes: params.scope ? params.scope.split(' ') : [],
                         state: params.state,
-                        scopes: params.scope ? params.scope.split(' ') : []
                     };
                     const {content: body} = await tmplRender.perform({
                         pkg: DEF.NAME,
@@ -109,7 +116,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             /**
              * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
              * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
-             * @param {OAuthRequestParams} params - Extracted OAuth 2.0 parameters.
+             * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
              * @returns {Promise<void>}
              */
             async function respondFailure(req, res, params) {
@@ -148,7 +155,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
              * as an object. These parameters are required for processing an OAuth 2.0 authorization request.
              *
              * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request.
-             * @returns {OAuthRequestParams} Extracted OAuth 2.0 parameters.
+             * @returns {AuthorizeRequestParams} Extracted OAuth 2.0 parameters.
              */
             function getParams(req) {
                 // get parameters from URL
@@ -164,7 +171,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             /**
              * Checks if the extracted OAuth 2.0 parameters are valid.
              *
-             * @param {OAuthRequestParams} params - Extracted OAuth 2.0 parameters.
+             * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
              * @returns {boolean} `true` if all required parameters are present, otherwise `false`.
              */
             function validateParams(params) {
@@ -175,17 +182,21 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             if (req.method === HTTP2_METHOD_GET) {
                 const params = getParams(req);
                 if (!validateParams(params)) {
+                    logger.info(`Received new authorization request with invalid parameters: ${JSON.stringify(params)}`);
                     await respondFailure(req, res, params);
                 } else {
-                    const {isAuthenticated} = await adapter.getAuthStatus({req});
+                    const {isAuthenticated, userId} = await adapter.getAuthStatus({req});
                     if (isAuthenticated) {
-                        await respondAuthorizationPage(req, res, params);
+                        logger.info(`Received new authorization request for an authenticated user.`);
+                        await respondAuthorizationPage(req, res, params, userId);
                     } else {
-                        // application must return the user to the same URL after authentication
+                        logger.info(`Received new authorization request for a non-authenticated user.`);
+                        // The application should redirect the user to the same URL after authentication
                         adapter.forwardToAuthentication({req, res});
                     }
                 }
             }
+
         };
     }
 }

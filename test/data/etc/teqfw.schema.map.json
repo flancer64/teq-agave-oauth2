@@ -1,0 +1,10 @@
+{
+  "ref": {
+    "@flancer64/teq-agave-oauth2": {
+      "/token": {
+        "path": "/test/token",
+        "attrs": {"id": "id"}
+      }
+    }
+  }
+}

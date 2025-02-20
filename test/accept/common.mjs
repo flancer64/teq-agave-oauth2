@@ -31,26 +31,28 @@ export async function dbDisconnect(container) {
 
 /**
  * @param {TeqFw_Di_Api_Container} container
- * @return {Promise<{user: {id: undefined}}>}
+ * @return {Promise<{token: {id:number}}>}
  */
 export async function dbCreateFkEntities(container) {
-    // Mock schema for testing
-    const schemaUser = {
+    // Mock schemas for testing
+    const schemaToken = {
         createDto: (dto) => ({id: dto.id, name: dto.name}),
         getAttributes: () => ({ID: 'id', NAME: 'name'}),
-        getEntityName: () => '/test/user',
+        getEntityName: () => '/test/token',
         getPrimaryKey: () => ['id'],
     };
-    const user = {id: undefined, name: 'Test User'};
     /** @type {TeqFw_Db_Back_App_Crud} */
     const crud = await container.get('TeqFw_Db_Back_App_Crud$');
 
     // Create an app user
     await dbConnect(container);
-    const {primaryKey} = await crud.createOne({schema: schemaUser, dto: user});
-    user.id = primaryKey.id;
+    // token
+    const token = {id: undefined, name: 'Test Token'};
+    const {primaryKey: pkToken} = await crud.createOne({schema: schemaToken, dto: token});
+    token.id = pkToken.id;
+    //
     await dbDisconnect(container);
-    return {user};
+    return {token};
 }
 
 /**
