@@ -17,7 +17,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
      *
      * @param {Fl64_OAuth2_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger
-     * @param {TeqFw_Web_Back_App_Server_Respond} respond
+     * @param {TeqFw_Web_Back_Help_Respond} respond
      * @param {Fl64_OAuth2_Back_Helper_Web} helpWeb
      * @param {Fl64_OAuth2_Back_Web_Handler_A_Authorize} aAuthorize
      * @param {Fl64_OAuth2_Back_Web_Handler_A_Token} aToken
@@ -26,7 +26,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
         {
             Fl64_OAuth2_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            TeqFw_Web_Back_App_Server_Respond$: respond,
+            TeqFw_Web_Back_Help_Respond$: respond,
             Fl64_OAuth2_Back_Helper_Web$: helpWeb,
             Fl64_OAuth2_Back_Web_Handler_A_Authorize$: aAuthorize,
             Fl64_OAuth2_Back_Web_Handler_A_Token$: aToken,
@@ -55,7 +55,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
                 }
             } catch (error) {
                 logger.exception(error);
-                respond.status500(res, error);
+                respond.code500_InternalServerError({res, body: error.message});
             }
         }
 
