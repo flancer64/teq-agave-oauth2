@@ -35,13 +35,6 @@ Object.freeze(ATTR);
  */
 class Dto {
     /**
-     * Internal numeric identifier for the client.
-     *
-     * @type {number}
-     */
-    id;
-
-    /**
      * Unique identifier for the client, used during authorization.
      *
      * @type {string}
@@ -56,11 +49,18 @@ class Dto {
     client_secret;
 
     /**
-     * Authorized redirect URI for the client.
+     * Date and time when the client was registered.
      *
-     * @type {string}
+     * @type {Date}
      */
-    redirect_uri;
+    date_created;
+
+    /**
+     * Internal numeric identifier for the client.
+     *
+     * @type {number}
+     */
+    id;
 
     /**
      * Human-readable name of the client (e.g., 'My App').
@@ -70,19 +70,19 @@ class Dto {
     name;
 
     /**
+     * Authorized redirect URI for the client.
+     *
+     * @type {string}
+     */
+    redirect_uri;
+
+    /**
      * Status of the client registration.
      *
      * @type {string}
      * @see Fl64_OAuth2_Shared_Enum_Client_Status
      */
     status;
-
-    /**
-     * Date and time when the client was registered.
-     *
-     * @type {Date}
-     */
-    date_created;
 }
 
 /**

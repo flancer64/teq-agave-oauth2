@@ -23,6 +23,7 @@ export default class Fl64_OAuth2_Back_Manager {
      * @param {TeqFw_Core_Shared_Api_Logger} params.TeqFw_Core_Shared_Api_Logger$$ - Logger instance.
      * @param {TeqFw_Db_Back_App_TrxWrapper} params.TeqFw_Db_Back_App_TrxWrapper$ - Database transaction wrapper.
      * @param {Fl64_Otp_Back_Mod_Token} modToken
+     * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token} repoClientToken
      * @param {typeof Fl64_OAuth2_Back_Enum_Token_Type} TOKEN
      */
     constructor(
@@ -31,9 +32,13 @@ export default class Fl64_OAuth2_Back_Manager {
             TeqFw_Core_Shared_Api_Logger$$: logger, // Logger instance
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper, // Database transaction wrapper
             Fl64_Otp_Back_Mod_Token$: modToken,
+            Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
             'Fl64_OAuth2_Back_Enum_Token_Type.default': TOKEN,
         }
     ) {
+        // VARS
+        const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
+
         // FUNCS
 
         /**
@@ -64,21 +69,31 @@ export default class Fl64_OAuth2_Back_Manager {
          * @returns {Promise<AuthorizationResult>} - A promise that resolves to the authorization result.
          */
         this.authorize = async function ({req, trx, getClientId = false, getUserInfo = false}) {
-            let isAuthorized = false, userId, clientId, userInfo;
+            let isAuthorized = false, userId = null, clientId = null, userInfo = null;
             const token = extractBearerToken(req);
 
             // Validate the token using stored data and handle authorization process
             if (token) {
                 await trxWrapper.execute(trx, async (trx) => {
+                    // read token data by token code
                     const {dto} = await modToken.read({trx, token});
                     if (dto?.id && (dto.type === TOKEN.ACCESS)) {
-                        isAuthorized = true;
-                        userId = dto.user_ref;
+                        // validate OAuth2 client existence
+                        const conditions = {[A_CLIENT_TOKEN.TOKEN_REF]: dto.id};
+                        const {records} = await repoClientToken.readMany({trx, conditions});
+                        if (records.length === 1) {
+                            // there is a relation between the bearer token and OAuth2 client
+                            const ref = records[0];
+                            clientId = ref.client_ref;
+                            isAuthorized = true;
+                            userId = dto.user_ref;
+                            logger.info(`Authorization bearer #${dto.id} is found for oauth client #${clientId}.`);
+                        }
                     }
                 });
             }
 
-            return {isAuthorized, userId, clientId, userInfo}; // Return the result
+            return {isAuthorized, userId, clientId, userInfo};
         };
     }
 }
