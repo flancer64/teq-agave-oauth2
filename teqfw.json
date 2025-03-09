@@ -11,7 +11,7 @@
   "@teqfw/web": {
     "handlers": {
       "Fl64_OAuth2_Back_Web_Handler": {
-        "before": ["TeqFw_Web_Api_Back_Web_Handler_Service"],
+        "before": ["TeqFw_Web_Back_App_Server_Handler_Static"],
         "spaces": ["fl64-oauth2"]
       }
     }

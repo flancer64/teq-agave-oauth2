@@ -1,7 +1,7 @@
 import {constants as H2} from 'node:http2';
 
 const {
-    HTTP2_HEADER_CONTENT_RESULT,
+    HTTP2_HEADER_CONTENT_TYPE,
     HTTP2_METHOD_GET,
 } = H2;
 
@@ -51,7 +51,6 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
     ) {
         // VARS
         const A_CLIENT = repoClient.getSchema().getAttributes();
-        const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
 
         // MAIN
         /**
@@ -106,7 +105,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
 
                     respond.code200_Ok({
                         res, body, headers: {
-                            [HTTP2_HEADER_CONTENT_RESULT]: 'text/html'
+                            [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'
                         }
                     });
                 });
@@ -143,7 +142,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                 });
                 respond.code400_BadRequest({
                     res, body, header: {
-                        [HTTP2_HEADER_CONTENT_RESULT]: 'text/html'
+                        [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'
                     }
                 });
             }
