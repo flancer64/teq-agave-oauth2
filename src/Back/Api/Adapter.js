@@ -1,7 +1,5 @@
 /**
- * Interface for adapting this plugin into the application.
- *
- * This is a documentation-only interface (not executable).
+ * Interface for implementing an application-level adapter for this plugin.
  *
  * @interface
  */
