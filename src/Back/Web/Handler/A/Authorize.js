@@ -1,11 +1,3 @@
-import {constants as H2} from 'node:http2';
-
-const {
-    HTTP2_HEADER_CONTENT_TYPE,
-    HTTP2_METHOD_GET,
-} = H2;
-
-
 /**
  * @typedef {Object} AuthorizeRequestParams
  * @property {string} clientId - The unique identifier of the OAuth client.
@@ -22,6 +14,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
     /**
      * Initializes the handler with required dependencies.
      *
+     * @param {typeof import('node:http2')} http2
      * @param {Fl64_OAuth2_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
@@ -36,6 +29,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
      */
     constructor(
         {
+            'node:http2': http2,
             Fl64_OAuth2_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
@@ -50,6 +44,11 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
         }
     ) {
         // VARS
+        const {
+            HTTP2_HEADER_CONTENT_TYPE,
+            HTTP2_METHOD_GET,
+        } = http2.constants;
+
         const A_CLIENT = repoClient.getSchema().getAttributes();
 
         // MAIN

@@ -1,22 +1,3 @@
-import {constants as H2} from 'node:http2';
-
-const {
-    HTTP2_HEADER_CACHE_CONTROL,
-    HTTP2_HEADER_CONTENT_TYPE,
-    HTTP2_METHOD_GET,
-    HTTP2_METHOD_POST,
-} = H2;
-
-
-/**
- * @typedef {Object} TokenRequestParams
- * @property {string} grant_type - The type of the authorization grant being used (e.g., "authorization_code").
- * @property {string} client_id - The unique identifier of the OAuth client.
- * @property {string} client_secret - The secret associated with the client identifier.
- * @property {string} code - The authorization code received after user consent.
- * @property {string} redirect_uri - The URI to which the user will be redirected after the authorization process.
- */
-
 /**
  * Dispatcher for handling HTTP requests.
  */
@@ -24,6 +5,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
     /**
      * Initializes the handler with required dependencies.
      *
+     * @param {typeof import('node:http2')} http2
      * @param {Fl64_OAuth2_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
@@ -39,6 +21,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
      */
     constructor(
         {
+            'node:http2': http2,
             Fl64_OAuth2_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
@@ -54,6 +37,13 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
         }
     ) {
         // VARS
+        const {
+            HTTP2_HEADER_CACHE_CONTROL,
+            HTTP2_HEADER_CONTENT_TYPE,
+            HTTP2_METHOD_GET,
+            HTTP2_METHOD_POST,
+        } = http2.constants;
+
         const A_CLIENT = repoClient.getSchema().getAttributes();
         const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
 
@@ -145,3 +135,13 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
         };
     }
 }
+
+
+/**
+ * @typedef {Object} TokenRequestParams
+ * @property {string} grant_type - The type of the authorization grant being used (e.g., "authorization_code").
+ * @property {string} client_id - The unique identifier of the OAuth client.
+ * @property {string} client_secret - The secret associated with the client identifier.
+ * @property {string} code - The authorization code received after user consent.
+ * @property {string} redirect_uri - The URI to which the user will be redirected after the authorization process.
+ */

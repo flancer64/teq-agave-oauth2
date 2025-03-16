@@ -1,34 +1,19 @@
-import {constants as H2} from 'node:http2';
-
-const {
-    HTTP2_HEADER_AUTHORIZATION,
-} = H2;
-
-/**
- * @typedef {Object} AuthorizationResult
- * @property {boolean} isAuthorized - Whether the request is authorized.
- * @property {number|null} userId - The user ID if authorized, otherwise null.
- * @property {number|null} clientId - The client ID if authorized, otherwise null.
- * @property {Object|null} userInfo - The user information if authorized, otherwise null.
- */
-
 /**
  * Manages OAuth2 authorization logic for the backend application.
  */
 export default class Fl64_OAuth2_Back_Manager {
     /**
      * Creates an instance of the OAuth2 manager.
-     * @param {Object} params - The initialization parameters.
-     * @param {Fl64_OAuth2_Back_Defaults} params.Fl64_OAuth2_Back_Defaults$ - Default settings for the manager.
-     * @param {TeqFw_Core_Shared_Api_Logger} params.TeqFw_Core_Shared_Api_Logger$$ - Logger instance.
-     * @param {TeqFw_Db_Back_App_TrxWrapper} params.TeqFw_Db_Back_App_TrxWrapper$ - Database transaction wrapper.
+     * @param {typeof import('node:http2')} http2
+     * @param {TeqFw_Core_Shared_Api_Logger} logger
+     * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper
      * @param {Fl64_Otp_Back_Mod_Token} modToken
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token} repoClientToken
      * @param {typeof Fl64_OAuth2_Back_Enum_Token_Type} TOKEN
      */
     constructor(
         {
-            Fl64_OAuth2_Back_Defaults$: DEF,
+            'node:http2': http2,
             TeqFw_Core_Shared_Api_Logger$$: logger, // Logger instance
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper, // Database transaction wrapper
             Fl64_Otp_Back_Mod_Token$: modToken,
@@ -37,6 +22,10 @@ export default class Fl64_OAuth2_Back_Manager {
         }
     ) {
         // VARS
+        const {
+            HTTP2_HEADER_AUTHORIZATION,
+        } = http2.constants;
+
         const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
 
         // FUNCS
@@ -97,3 +86,11 @@ export default class Fl64_OAuth2_Back_Manager {
         };
     }
 }
+
+/**
+ * @typedef {Object} AuthorizationResult
+ * @property {boolean} isAuthorized - Whether the request is authorized.
+ * @property {number|null} userId - The user ID if authorized, otherwise null.
+ * @property {number|null} clientId - The client ID if authorized, otherwise null.
+ * @property {Object|null} userInfo - The user information if authorized, otherwise null.
+ */

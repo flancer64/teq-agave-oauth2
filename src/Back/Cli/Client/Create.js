@@ -1,5 +1,3 @@
-import {randomUUID} from 'crypto';
-
 /**
  * @namespace Fl64_OAuth2_Back_Cli_Client_Create
  */
@@ -13,6 +11,7 @@ const OPT_REDIRECT_URI = 'redirectUri';
 /**
  * Factory for a CLI command to register a new OAuth2 client.
  *
+ * @param {typeof import('node:crypto')} crypto
  * @param {Fl64_OAuth2_Back_Defaults} DEF - Contains global CLI prefix configuration
  * @param {TeqFw_Core_Shared_Api_Logger} logger
  * @param {TeqFw_Core_Back_Api_Dto_Command.Factory} fCommand
@@ -25,6 +24,7 @@ const OPT_REDIRECT_URI = 'redirectUri';
  */
 export default function Factory(
     {
+        'node:crypto': crypto,
         Fl64_OAuth2_Back_Defaults$: DEF,
         TeqFw_Core_Shared_Api_Logger$$: logger,
         'TeqFw_Core_Back_Api_Dto_Command.Factory$': fCommand,
@@ -34,6 +34,11 @@ export default function Factory(
         Fl64_OAuth2_Back_Store_RDb_Repo_Client$: repoClient,
     }
 ) {
+    // VARS
+    const {randomUUID} = crypto;
+
+
+    // FUNCS
     /**
      * Handles the creation of a new OAuth2 client.
      *

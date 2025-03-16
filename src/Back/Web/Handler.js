@@ -1,20 +1,11 @@
 /**
- * Handles all requests in the plugin space.
- */
-import {constants as H2} from 'node:http2';
-
-const {
-    HTTP2_METHOD_GET,
-    HTTP2_METHOD_POST,
-} = H2;
-
-/**
- * Dispatcher for handling HTTP requests.
+ * Dispatcher for handling HTTP requests in the plugin space.
  */
 export default class Fl64_OAuth2_Back_Web_Handler {
     /**
      * Initializes the handler with required dependencies.
      *
+     * @param {typeof import('node:http2')} http2
      * @param {Fl64_OAuth2_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Web_Back_Help_Respond} respond
@@ -24,6 +15,7 @@ export default class Fl64_OAuth2_Back_Web_Handler {
      */
     constructor(
         {
+            'node:http2': http2,
             Fl64_OAuth2_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Back_Help_Respond$: respond,
@@ -32,6 +24,13 @@ export default class Fl64_OAuth2_Back_Web_Handler {
             Fl64_OAuth2_Back_Web_Handler_A_Token$: aToken,
         }
     ) {
+        // VARS
+        const {
+            HTTP2_METHOD_GET,
+            HTTP2_METHOD_POST,
+        } = http2.constants;
+
+        // FUNCS
         /**
          * Handles incoming HTTP requests and delegates processing to specific handlers.
          *
