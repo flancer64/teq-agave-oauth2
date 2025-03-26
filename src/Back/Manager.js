@@ -18,7 +18,7 @@ export default class Fl64_OAuth2_Back_Manager {
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper, // Database transaction wrapper
             Fl64_Otp_Back_Mod_Token$: modToken,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
-            'Fl64_OAuth2_Back_Enum_Token_Type.default': TOKEN,
+            Fl64_OAuth2_Back_Enum_Token_Type$: TOKEN,
         }
     ) {
         // VARS

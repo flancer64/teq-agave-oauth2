@@ -101,7 +101,7 @@ export default class Fl64_OAuth2_Back_Store_RDb_Schema_Client {
         {
             Fl64_OAuth2_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Util_Cast$: cast,
-            'Fl64_OAuth2_Shared_Enum_Client_Status.default': STATUS,
+            Fl64_OAuth2_Shared_Enum_Client_Status$: STATUS,
         }
     ) {
         // INSTANCE METHODS

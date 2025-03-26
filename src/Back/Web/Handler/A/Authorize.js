@@ -39,8 +39,8 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             Fl64_OAuth2_Back_Api_Adapter$: adapter,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client$: repoClient,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
-            'Fl64_Tmpl_Back_Enum_Type.default': TMPL,
-            'Fl64_OAuth2_Back_Enum_Token_Type.default': TOKEN,
+            Fl64_Tmpl_Back_Enum_Type$: TMPL,
+            Fl64_OAuth2_Back_Enum_Token_Type$: TOKEN,
         }
     ) {
         // VARS
