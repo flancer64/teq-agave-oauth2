@@ -19,12 +19,11 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
      * @param {TeqFw_Web_Back_Help_Respond} respond
-     * @param {Fl64_Tmpl_Back_Service_Render} tmplRender
+     * @param {Fl64_Tmpl_Back_Service_Render_Web} srvRender
      * @param {Fl64_Otp_Back_Mod_Token} modToken - OTP token model to manage OTP tokens
      * @param {Fl64_OAuth2_Back_Api_Adapter} adapter
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client} repoClient
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token} repoClientToken
-     * @param {typeof Fl64_Tmpl_Back_Enum_Type} TMPL
      * @param {typeof Fl64_OAuth2_Back_Enum_Token_Type} TOKEN
      */
     constructor(
@@ -34,12 +33,11 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             TeqFw_Web_Back_Help_Respond$: respond,
-            Fl64_Tmpl_Back_Service_Render$: tmplRender,
+            Fl64_Tmpl_Back_Service_Render_Web$: srvRender,
             Fl64_Otp_Back_Mod_Token$: modToken,
             Fl64_OAuth2_Back_Api_Adapter$: adapter,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client$: repoClient,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
-            Fl64_Tmpl_Back_Enum_Type$: TMPL,
             Fl64_OAuth2_Back_Enum_Token_Type$: TOKEN,
         }
     ) {
@@ -75,7 +73,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                     // Get client information from DB
                     const key = {[A_CLIENT.CLIENT_ID]: params.clientId};
                     const {record} = await repoClient.readOne({trx, key});
-                    if (!record) return respondFailure(req, res, params);
+                    if (!record) return respondFailure(req, res, params, true);
                     // generate a code for authorization
                     const {token, tokenId} = await modToken.create({trx, userId, type: TOKEN.AUTHORIZATION});
                     // save reference between client & token
@@ -84,7 +82,6 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                     dto.token_ref = tokenId;
                     await repoClientToken.createOne({trx, dto});
                     // Prepare the view for mustache template
-                    const {localeApp, localeUser} = await adapter.getLocales({req});
                     const view = {
                         clientName: record.name,
                         code: token,
@@ -92,16 +89,14 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                         scopes: params.scope ? params.scope.split(' ') : [],
                         state: params.state,
                     };
-                    const {content: body} = await tmplRender.perform({
-                        pkg: DEF.NAME,
-                        type: TMPL.WEB,
+                    const {content: body} = await srvRender.perform({
                         name: 'authorize/authorizeRequest.html',
-                        view,
-                        localeUser,
-                        localeApp,
+                        pkg: DEF.NAME,
                         localePkg: DEF.LOCALE,
+                        view,
+                        req,
+                        trx,
                     });
-
                     respond.code200_Ok({
                         res, body, headers: {
                             [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'
@@ -115,30 +110,30 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
              * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
              * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
              * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
+             * @param {boolean} isWrongClientId - 'true' if OAuth2 client id not found in the DB
              * @returns {Promise<void>}
              */
-            async function respondFailure(req, res, params) {
-                const {localeApp, localeUser} = await adapter.getLocales({req});
+            async function respondFailure(req, res, params, isWrongClientId = false) {
                 const view = {
                     isMissingParams: !params.clientId || !params.redirectUri || !params.responseType || !params.state,
                     isInvalidResponseType: params.responseType && params.responseType !== 'code',
                     isUnknownError: false,
+                    isWrongClientId,
                 };
 
                 // If no specific error is detected, mark as unknown error
-                if (!view.isMissingParams && !view.isInvalidResponseType) {
+                if (!view.isMissingParams && !view.isInvalidResponseType && !view.isWrongClientId) {
                     view.isUnknownError = true;
                 }
 
-                const {content: body} = await tmplRender.perform({
-                    pkg: DEF.NAME,
-                    type: TMPL.WEB,
+                const {content: body} = await srvRender.perform({
                     name: 'authorize/failedRequest.html',
-                    view,
-                    localeUser,
-                    localeApp,
+                    pkg: DEF.NAME,
                     localePkg: DEF.LOCALE,
+                    view,
+                    req,
                 });
+
                 respond.code400_BadRequest({
                     res, body, header: {
                         [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'

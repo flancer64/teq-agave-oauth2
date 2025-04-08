@@ -67,19 +67,27 @@
 <div class="container">
     <h2>Invalid Request</h2>
 
-    {{#isMissingParams}}
-    <p class="message error">The request is missing required parameters.</p>
-    {{/isMissingParams}}
+    <div>
+        {{#isMissingParams}}
+        <span>The request is missing required parameters.</span>
+        {{/isMissingParams}}
 
-    {{#isInvalidResponseType}}
-    <p class="message error">The response type is invalid. Expected "code".</p>
-    {{/isInvalidResponseType}}
+        {{#isInvalidResponseType}}
+        <span>The response type is invalid. Expected "code".</span>
+        {{/isInvalidResponseType}}
 
-    {{#isUnknownError}}
-    <p class="message error">An unexpected error occurred. Please check your request and try again.</p>
-    {{/isUnknownError}}
+        {{#isUnknownError}}
+        <span>An unexpected error occurred. Please check your request and try
+        again.</span>
+        {{/isUnknownError}}
 
-    <p><a href="/" class="button">Go to Homepage</a></p>
+        {{#isWrongClientId}}
+        <span>The OAuth2 client requesting authorization is not registered in the application.</span>
+        {{/isWrongClientId}}
+    </div>
+
+    <div><a href="/" class="button">Go to Homepage</a></div>
+
 </div>
 </body>
 </html>
