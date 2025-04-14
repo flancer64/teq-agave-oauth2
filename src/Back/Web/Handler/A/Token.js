@@ -6,33 +6,23 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
      * Initializes the handler with required dependencies.
      *
      * @param {typeof import('node:http2')} http2
-     * @param {Fl64_OAuth2_Back_Defaults} DEF
-     * @param {TeqFw_Core_Shared_Api_Logger} logger
      * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
      * @param {TeqFw_Web_Back_Help_Respond} respond
-     * @param {Fl64_Tmpl_Back_Service_Render} tmplRender
      * @param {Fl64_OAuth2_Back_Helper_Web} helpWeb
      * @param {Fl64_Otp_Back_Mod_Token} modToken - OTP token model to manage OTP tokens
-     * @param {Fl64_OAuth2_Back_Api_Adapter} adapter
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client} repoClient
      * @param {Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token} repoClientToken
-     * @param {typeof Fl64_Tmpl_Back_Enum_Type} TMPL
      * @param {typeof Fl64_OAuth2_Back_Enum_Token_Type} TOKEN
      */
     constructor(
         {
             'node:http2': http2,
-            Fl64_OAuth2_Back_Defaults$: DEF,
-            TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             TeqFw_Web_Back_Help_Respond$: respond,
-            Fl64_Tmpl_Back_Service_Render$: tmplRender,
             Fl64_OAuth2_Back_Helper_Web$: helpWeb,
             Fl64_Otp_Back_Mod_Token$: modToken,
-            Fl64_OAuth2_Back_Api_Adapter$: adapter,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client$: repoClient,
             Fl64_OAuth2_Back_Store_RDb_Repo_Client_Token$: repoClientToken,
-            Fl64_Tmpl_Back_Enum_Type$: TMPL,
             Fl64_OAuth2_Back_Enum_Token_Type$: TOKEN,
         }
     ) {
@@ -43,9 +33,6 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
             HTTP2_METHOD_GET,
             HTTP2_METHOD_POST,
         } = http2.constants;
-
-        const A_CLIENT = repoClient.getSchema().getAttributes();
-        const A_CLIENT_TOKEN = repoClientToken.getSchema().getAttributes();
 
         // MAIN
         /**
