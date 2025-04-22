@@ -80,19 +80,19 @@ export default function Factory(
     const res = fCommand.create();
     res.realm = DEF.CLI_PREFIX;
     res.name = 'client-create';
-    res.desc = 'Create a new OAuth2 client with a generated clientId and clientSecret.';
+    res.desc = 'create a new OAuth2 client with a generated clientId and clientSecret.';
     res.action = action;
 
     // Define the --name option
     const optName = fOpt.create();
     optName.flags = `-n, --${OPT_NAME} <name>`;
-    optName.description = 'The human-readable name for the OAuth2 client';
+    optName.description = 'the human-readable name for the OAuth2 client';
     res.opts.push(optName);
 
     // Define the --redirectUri option
     const optRedirectUri = fOpt.create();
     optRedirectUri.flags = `-r, --${OPT_REDIRECT_URI} <redirectUri>`;
-    optRedirectUri.description = 'The redirect URI for the OAuth2 client';
+    optRedirectUri.description = 'the redirect URI for the OAuth2 client';
     res.opts.push(optRedirectUri);
 
     return res;
