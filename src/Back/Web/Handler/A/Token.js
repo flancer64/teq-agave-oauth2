@@ -41,7 +41,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
          * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
          * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
          *
-         * @return {Promise<void>}
+         * @return {Promise<boolean>}
          */
         this.run = async function (req, res) {
 
@@ -73,7 +73,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
                         : 'Invalid or missing grant_type';
                     respond.code400_BadRequest({res, body});
                 } else {
-                    await trxWrapper.execute(null, async (trx) => {
+                    return trxWrapper.execute(null, async (trx) => {
                         // get corresponded OTP token
                         const {dto: dtoToken} = await modToken.read({trx, token: params.code});
                         if (dtoToken && (dtoToken.type === TOKEN.AUTHORIZATION)) {
@@ -116,6 +116,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Token {
                         } else {
                             respond.code400_BadRequest({res, body: 'Invalid or expired authorization code'});
                         }
+                        return true;
                     });
                 }
             }

@@ -56,7 +56,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
          * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
          * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
          *
-         * @return {Promise<void>}
+         * @return {Promise<boolean>}
          */
         this.run = async function (req, res) {
             // FUNCS
@@ -66,10 +66,10 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
              * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
              * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
              * @param {number} userId
-             * @returns {Promise<void>}
+             * @returns {Promise<boolean>}
              */
             async function respondAuthorizationPage(req, res, params, userId) {
-                await trxWrapper.execute(null, async (trx) => {
+                return trxWrapper.execute(null, async (trx) => {
                     // Get client information from DB
                     const key = {[A_CLIENT.CLIENT_ID]: params.clientId};
                     const {record} = await repoClient.readOne({trx, key});
@@ -102,6 +102,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                             [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'
                         }
                     });
+                    return true;
                 });
 
             }
@@ -111,7 +112,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
              * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
              * @param {AuthorizeRequestParams} params - Extracted OAuth 2.0 parameters.
              * @param {boolean} isWrongClientId - 'true' if OAuth2 client id not found in the DB
-             * @returns {Promise<void>}
+             * @returns {Promise<boolean>}
              */
             async function respondFailure(req, res, params, isWrongClientId = false) {
                 const view = {
@@ -139,6 +140,7 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                         [HTTP2_HEADER_CONTENT_TYPE]: 'text/html'
                     }
                 });
+                return true;
             }
 
             /**
@@ -176,16 +178,17 @@ export default class Fl64_OAuth2_Back_Web_Handler_A_Authorize {
                 const params = getParams(req);
                 if (!validateParams(params)) {
                     logger.info(`Received new authorization request with invalid parameters: ${JSON.stringify(params)}`);
-                    await respondFailure(req, res, params);
+                    return respondFailure(req, res, params);
                 } else {
                     const {isAuthenticated, userId} = await adapter.getAuthStatus({req});
                     if (isAuthenticated) {
                         logger.info(`Received new authorization request for an authenticated user.`);
-                        await respondAuthorizationPage(req, res, params, userId);
+                        return respondAuthorizationPage(req, res, params, userId);
                     } else {
                         logger.info(`Received new authorization request for a non-authenticated user.`);
                         // The application should redirect the user to the same URL after authentication
                         adapter.forwardToAuthentication({req, res});
+                        return true;
                     }
                 }
             }
