@@ -34,6 +34,7 @@ export default class Fl64_OAuth2_Back_Api_Adapter {
      *          - `localeApp`: Default application locale, usually configured globally.
      */
     async getLocales({req}) {
+        // TODO: use it or remove it
         throw new Error('Cannot instantiate an interface');
     }
 
